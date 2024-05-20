@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"log"
+	"net/http"
+)
 
 const englishHelloPrefix = "Hello, "
 const spanishHelloPrefix = "Hola, "
@@ -22,6 +27,16 @@ func Hello(name string, language string) string {
 	}
 	return prefix + name
 }
+
+func Greet(writer io.Writer, name string) {
+	fmt.Fprintf(writer, "Hello, %s", name)
+}
+
+func MyGreeterHandler(w http.ResponseWriter, r *http.Request) {
+	Greet(w, "world")
+}
 func main() {
-	fmt.Println("hello world")
+	// depedencyinjection.Greet(os.Stdout, "Elodie")
+	log.Fatal(http.ListenAndServe(":5001", http.HandlerFunc(MyGreeterHandler)))
+
 }
